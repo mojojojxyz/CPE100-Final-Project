@@ -20,7 +20,7 @@ Hotel Booking Management System
 5) searchAndDisplayBooking() - ค้นหาและแสดงรายละเอียดการจอง
 6) report()             - สรุปรายงานยอดต่าง ๆ
 7) saveBookings()       - บันทึกข้อมูลลงไฟล์
-8) main()                - เมนูหลักและการควบคุมโปรแกรม
+8) main()               - เมนูหลัก
 ================================================================================
 */
 
@@ -96,37 +96,6 @@ int findBookingIndex(const char *first, const char *last) {
     return -1;
 }
 
-int findBookingByID(int bookingId) {
-    for (int i = 0; i < bookingCount; i++) {
-        if (bookings[i].id == bookingId) {
-            return i;
-        }
-    }
-    return -1;
-}
-
-void listBookingsByName(const char *first, const char *last) {
-    int found = 0;
-    printf("\n=== Bookings found ===\n");
-    for (int i = 0; i < bookingCount; i++) {
-        if (strcmp(bookings[i].firstName, first) == 0 &&
-            strcmp(bookings[i].lastName, last) == 0) {
-            printf("ID: %d | %s %s | %s | %s to %s | %s\n",
-                   bookings[i].id,
-                   bookings[i].firstName,
-                   bookings[i].lastName,
-                   bookings[i].roomType,
-                   bookings[i].checkIn,
-                   bookings[i].checkOut,
-                   bookings[i].isActive ? "Active" : "Canceled");
-            found++;
-        }
-    }
-    if (!found) {
-        printf("No bookings found.\n");
-    }
-}
-
 /* -------------------------
    1) loadBookings()
    ------------------------- */
@@ -155,7 +124,7 @@ void loadBookings() {
         if (b.id >= nextId)
             nextId = b.id + 1;
 
-        if (bookingCount >= 100)
+        if (bookingCount >= 10)
             break;
     }
 
@@ -212,7 +181,6 @@ void addBooking() {
     if (bookingCount < 100) {
         bookings[bookingCount++] = b;
         printf("\n✓ Booking added successfully!\n");
-        printf("Booking ID: %d\n", b.id);
         printf("Payment Status: UNPAID\n");
         printf("Use menu option 3 to process payment.\n");
     } else {
@@ -225,57 +193,14 @@ void addBooking() {
    ------------------------- */
 
 void cancelBooking() {
+    char first[50], last[50];
     printf("\n=== Cancel Booking ===\n");
-    printf("Search by:\n");
-    printf("1. Name\n");
-    printf("2. Booking ID\n");
-    printf("Select option: ");
-    
-    int searchOption;
-    if (scanf("%d", &searchOption) != 1) {
-        int c;
-        while ((c = getchar()) != '\n' && c != EOF) {}
-        printf("Invalid input.\n");
-        return;
-    }
+    printf("First Name: ");
+    scanf("%49s", first);
+    printf("Last Name: ");
+    scanf("%49s", last);
 
-    int idx = -1;
-    
-    if (searchOption == 1) {
-        char first[50], last[50];
-        printf("First Name: ");
-        scanf("%49s", first);
-        printf("Last Name: ");
-        scanf("%49s", last);
-        
-        idx = findBookingIndex(first, last);
-        
-        int count = 0;
-        for (int i = 0; i < bookingCount; i++) {
-            if (strcmp(bookings[i].firstName, first) == 0 &&
-                strcmp(bookings[i].lastName, last) == 0) {
-                count++;
-            }
-        }
-        
-        if (count > 1) {
-            printf("\nFound %d bookings with this name!\n", count);
-            listBookingsByName(first, last);
-            printf("\nPlease enter Booking ID: ");
-            int bookingId;
-            scanf("%d", &bookingId);
-            idx = findBookingByID(bookingId);
-        }
-    } else if (searchOption == 2) {
-        int bookingId;
-        printf("Booking ID: ");
-        scanf("%d", &bookingId);
-        idx = findBookingByID(bookingId);
-    } else {
-        printf("Invalid option.\n");
-        return;
-    }
-
+    int idx = findBookingIndex(first, last);
     if (idx == -1) {
         printf("Booking not found.\n");
         return;
@@ -310,57 +235,14 @@ void cancelBooking() {
    ------------------------- */
 
 void processPayment() {
+    char first[50], last[50];
     printf("\n=== Process Payment ===\n");
-    printf("Search by:\n");
-    printf("1. Name\n");
-    printf("2. Booking ID\n");
-    printf("Select option: ");
-    
-    int searchOption;
-    if (scanf("%d", &searchOption) != 1) {
-        int c;
-        while ((c = getchar()) != '\n' && c != EOF) {}
-        printf("Invalid input.\n");
-        return;
-    }
+    printf("First Name: ");
+    scanf("%49s", first);
+    printf("Last Name: ");
+    scanf("%49s", last);
 
-    int idx = -1;
-    
-    if (searchOption == 1) {
-        char first[50], last[50];
-        printf("First Name: ");
-        scanf("%49s", first);
-        printf("Last Name: ");
-        scanf("%49s", last);
-        
-        idx = findBookingIndex(first, last);
-        
-        int count = 0;
-        for (int i = 0; i < bookingCount; i++) {
-            if (strcmp(bookings[i].firstName, first) == 0 &&
-                strcmp(bookings[i].lastName, last) == 0) {
-                count++;
-            }
-        }
-        
-        if (count > 1) {
-            printf("\nFound %d bookings with this name!\n", count);
-            listBookingsByName(first, last);
-            printf("\nPlease enter Booking ID: ");
-            int bookingId;
-            scanf("%d", &bookingId);
-            idx = findBookingByID(bookingId);
-        }
-    } else if (searchOption == 2) {
-        int bookingId;
-        printf("Booking ID: ");
-        scanf("%d", &bookingId);
-        idx = findBookingByID(bookingId);
-    } else {
-        printf("Invalid option.\n");
-        return;
-    }
-
+    int idx = findBookingIndex(first, last);
     if (idx == -1) {
         printf("Booking not found.\n");
         return;
@@ -408,57 +290,14 @@ void processPayment() {
    ------------------------- */
 
 void searchAndDisplayBooking() {
+    char first[50], last[50];
     printf("\n=== Search Booking ===\n");
-    printf("Search by:\n");
-    printf("1. Name\n");
-    printf("2. Booking ID\n");
-    printf("Select option: ");
-    
-    int searchOption;
-    if (scanf("%d", &searchOption) != 1) {
-        int c;
-        while ((c = getchar()) != '\n' && c != EOF) {}
-        printf("Invalid input.\n");
-        return;
-    }
+    printf("First Name: ");
+    scanf("%49s", first);
+    printf("Last Name: ");
+    scanf("%49s", last);
 
-    int idx = -1;
-    
-    if (searchOption == 1) {
-        char first[50], last[50];
-        printf("First Name: ");
-        scanf("%49s", first);
-        printf("Last Name: ");
-        scanf("%49s", last);
-        
-        idx = findBookingIndex(first, last);
-        
-        int count = 0;
-        for (int i = 0; i < bookingCount; i++) {
-            if (strcmp(bookings[i].firstName, first) == 0 &&
-                strcmp(bookings[i].lastName, last) == 0) {
-                count++;
-            }
-        }
-        
-        if (count > 1) {
-            printf("\nFound %d bookings with this name!\n", count);
-            listBookingsByName(first, last);
-            printf("\nPlease enter Booking ID: ");
-            int bookingId;
-            scanf("%d", &bookingId);
-            idx = findBookingByID(bookingId);
-        }
-    } else if (searchOption == 2) {
-        int bookingId;
-        printf("Booking ID: ");
-        scanf("%d", &bookingId);
-        idx = findBookingByID(bookingId);
-    } else {
-        printf("Invalid option.\n");
-        return;
-    }
-
+    int idx = findBookingIndex(first, last);
     if (idx == -1) {
         printf("Booking not found.\n");
         return;
